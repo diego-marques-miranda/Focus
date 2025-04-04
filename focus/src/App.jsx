@@ -152,7 +152,7 @@ function App() {
                     {/* Área do Cronômetro */}
                     <div className="mt-6 flex flex-col items-center">
                         <h1 className="text-3xl font-bold text-slate-900 pb-4">Session</h1>
-                        <div className="text-2xl font-bold h-32 w-32 bg-neutral-200 border border-neutral-300 shadow-xl flex justify-center items-center rounded-full text-slate-900">{formatElapsedTime()}</div>
+                        <div className="text-xl font-semibold h-28 w-28 bg-neutral-200 border border-neutral-300 shadow-xl flex justify-center items-center rounded-full text-slate-900">{formatElapsedTime()}</div>
                         <div className="flex my-6">
                             <button
                                 onClick={startTimer}
