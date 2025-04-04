@@ -108,10 +108,10 @@ function App() {
             </header>
 
             <div className="w-full flex flex-col items-center bg-slate-900 p-8">
-                <div className="w-full flex flex-col items-center bg-neutral-50 pt-4 rounded-2xl h-[78.133vh]">
-                    <div className="mt-8 h-48 w-48 rounded-full flex flex-col items-center justify-center shadow-xl border-1 border-neutral-300 bg-neutral-200">
-                        <p className="text-4xl font-bold text-slate-900">{formatStudiedTime()}</p>
-                        <p className="text-base text-red-400">{formatRemainingTime()}</p>
+                <div className="w-full flex flex-col items-center bg-neutral-50 rounded-2xl h-[78.133vh]">
+                    <div className="mt-8 h-[160px] w-[160px] rounded-full flex flex-col items-center justify-center shadow-xl border-1 border-neutral-300 bg-neutral-200">
+                        <p className="text-3xl font-bold text-slate-900">{formatStudiedTime()}</p>
+                        <p className="text-sm text-red-400">{formatRemainingTime()}</p>
                     </div>
 
                     <div className="container mx-auto flex justify-center p-4">
