@@ -39,7 +39,7 @@ function App() {
             </header>
 
             <div className="mt-8 h-48 w-48 rounded-full flex flex-col items-center justify-center shadow-xl border-1 border-neutral-300 bg-neutral-200">
-                <p className="text-4xl text-slate-900">{hoursStudied}h{minutesStudied}min</p>
+                <p className="text-4xl font-bold text-slate-900">{hoursStudied}h{minutesStudied}min</p>
                 <p className="text-base text-red-400">{remainingHours}h{remainingMinutes}min remaining</p>
             </div>
 
