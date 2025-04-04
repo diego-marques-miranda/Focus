@@ -5,19 +5,40 @@ function App() {
     const [minutesStudied, setMinutesStudied] = useState(JSON.parse(localStorage.getItem("minutesStudied")) || 0);
     const [dailyGoalHours, setDailyGoalHours] = useState(parseInt(localStorage.getItem("dailyGoalHours")) || 4);
     const [dailyGoalMinutes, setDailyGoalMinutes] = useState(parseInt(localStorage.getItem("dailyGoalMinutes")) || 0);
-    const [sessionHours, setSessionHours] = useState(0);
-    const [sessionMinutes, setSessionMinutes] = useState(0);
+    const [sessionHours, setSessionHours] = useState(''); // Inicializado como string vazia
+    const [sessionMinutes, setSessionMinutes] = useState(''); // Inicializado como string vazia
 
     // Estados para o cronômetro (seu código existente)
     const [isRunning, setIsRunning] = useState(false);
     const [elapsedTime, setElapsedTime] = useState(0);
     const intervalRef = useRef(null);
 
+    const handleSessionHoursChange = (e) => {
+        const value = e.target.value;
+        if (value === '' || (!isNaN(parseInt(value)) && parseInt(value) >= 0)) {
+            setSessionHours(value);
+        }
+    };
+
+    const handleSessionMinutesChange = (e) => {
+        const value = e.target.value;
+        if (value === '' || (!isNaN(parseInt(value)) && parseInt(value) >= 0 && parseInt(value) <= 59)) {
+            setSessionMinutes(value);
+        }
+    };
+
     const registerSession = () => {
-        setHoursStudied(prevHours => prevHours + parseInt(sessionHours));
-        setMinutesStudied(prevMinutes => prevMinutes + parseInt(sessionMinutes));
-        setSessionHours(0);
-        setSessionMinutes(0);
+        const hours = parseInt(sessionHours) || 0;
+        const minutes = parseInt(sessionMinutes) || 0;
+
+        let totalMinutes = parseInt(minutesStudied) + minutes;
+        let newHours = parseInt(hoursStudied) + hours + Math.floor(totalMinutes / 60);
+        let newMinutes = totalMinutes % 60;
+
+        setHoursStudied(newHours);
+        setMinutesStudied(newMinutes);
+        setSessionHours(''); // Limpar após registrar
+        setSessionMinutes(''); // Limpar após registrar
     };
 
     const totalStudiedMinutes = hoursStudied * 60 + minutesStudied;
@@ -31,20 +52,27 @@ function App() {
         if (hoursStudied === 0 && minutesStudied > 0) {
             return `${minutesStudied}min`;
         }
-        if (minutesStudied === 0) {
+        if (minutesStudied === 0 && hoursStudied > 0) {
             return `${hoursStudied}h`;
+        }
+        if (hoursStudied === 0 && minutesStudied === 0) {
+            return `0min`;
         }
         return `${hoursStudied}h${minutesStudied}min`;
     };
 
     const formatRemainingTime = () => {
-        if (remainingHours === 0 && remainingMinutes > 0) {
-            return `${remainingMinutes}min remaining`;
+        let remainingText = "";
+        if (remainingHours > 0) {
+            remainingText += `${remainingHours}h`;
         }
-        if (remainingMinutes === 0) {
-            return `${remainingHours}h remaining`;
+        if (remainingMinutes > 0) {
+            remainingText += `${remainingMinutes}min`;
         }
-        return `${remainingHours}h${remainingMinutes}min remaining`;
+        if (remainingHours === 0 && remainingMinutes === 0) {
+            remainingText = `0min`;
+        }
+        return remainingText ? `${remainingText} remaining` : "";
     };
 
     const formatElapsedTime = () => {
@@ -79,11 +107,15 @@ function App() {
     const completeSession = () => {
         pauseTimer();
         const totalSeconds = Math.floor(elapsedTime / 1000);
-        const hours = Math.floor(totalSeconds / 3600);
-        const minutes = Math.floor((totalSeconds % 3600) / 60);
+        const elapsedHours = Math.floor(totalSeconds / 3600);
+        const elapsedMinutes = Math.floor((totalSeconds % 3600) / 60);
 
-        setHoursStudied(prevHours => prevHours + hours);
-        setMinutesStudied(prevMinutes => prevMinutes + minutes);
+        let totalMinutes = parseInt(minutesStudied) + elapsedMinutes;
+        let newHours = parseInt(hoursStudied) + elapsedHours + Math.floor(totalMinutes / 60);
+        let newMinutes = totalMinutes % 60;
+
+        setHoursStudied(newHours);
+        setMinutesStudied(newMinutes);
         setElapsedTime(0);
     };
 
@@ -135,24 +167,24 @@ function App() {
                     <div className="container mx-auto flex justify-center p-4">
                         <div className="flex flex-col items-center m-4">
                             <label className="block text-gray-700 text-sm font-bold mb-2">
-                                Hours:
+                                Horas:
                             </label>
                             <input
                                 type="number"
                                 value={sessionHours}
-                                onChange={(e) => setSessionHours(parseInt(e.target.value))}
+                                onChange={handleSessionHoursChange}
                                 className="shadow-xl border border-neutral-200 bg-neutral-100 appearance-none rounded-full w-16 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                             />
                         </div>
 
                         <div className="m-4 flex flex-col items-center">
                             <label className="block text-gray-700 text-sm font-bold mb-2">
-                                Minutes:
+                                Minutos:
                             </label>
                             <input
                                 type="number"
                                 value={sessionMinutes}
-                                onChange={(e) => setSessionMinutes(parseInt(e.target.value))}
+                                onChange={handleSessionMinutesChange}
                                 className="shadow-xl border-neutral-200 bg-neutral-100 appearance-none border rounded-full w-16 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                             />
                         </div>
@@ -160,9 +192,11 @@ function App() {
 
                     <button
                         onClick={registerSession}
-                        className="shadow-xl bg-slate-900 hover:bg-slate-950 text-white font-bold py-2 px-4 rounded-full w-1/5"
+                        className="shadow-xl bg-slate-900 hover:bg-slate-950 text-white font-bold py-2 px-4 rounded-full"
                     >
-                        Add
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                        </svg>
                     </button>
 
                     <div className="mt-6 flex flex-col items-center">
