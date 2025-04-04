@@ -178,8 +178,8 @@ function App() {
                 <h1 className="text-6xl font-bold font-serif text-center">FOCUS</h1>
             </header>
 
-            <div className="w-full h-[85vh] flex flex-col items-center bg-slate-900 p-8">
-                <div className="w-full flex flex-col items-center bg-neutral-50 pt-4 rounded-2xl h-[auto]"> {/* Alterado para auto para acomodar o botão */}
+            <div className="w-full flex flex-col items-center bg-slate-900 p-8">
+                <div className="w-full flex flex-col items-center bg-neutral-50 pt-4 rounded-2xl min-h-[calc(100vh - 15vh - 64px)]"> {/* Alterado min-h */}
                     <div className="mt-8 h-40 w-40 rounded-full flex flex-col items-center justify-center shadow-xl border-1 border-neutral-300 bg-neutral-200">
                         <p className="text-3xl font-bold text-slate-900">{formatStudiedTime()}</p>
                         <p className="text-sm text-red-400">{formatRemainingTime()}</p>
@@ -259,7 +259,7 @@ function App() {
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
                             <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
                         </svg>
-                        
+
                     </button>
                 </div>
             </div>
