@@ -127,16 +127,15 @@ function App() {
 
             <div className="w-full flex flex-col items-center bg-slate-900 p-8">
                 <div className="w-full flex flex-col items-center bg-neutral-50 pt-4 rounded-2xl h-[78.133vh]">
-                    <div className="mt-8 h-48 w-48 rounded-full flex flex-col items-center justify-center shadow-xl border-1 border-neutral-300 bg-neutral-200">
-                        <p className="text-4xl font-bold text-slate-900">{formatStudiedTime()}</p>
-                        <p className="text-base text-red-400">{formatRemainingTime()}</p>
+                    <div className="mt-8 h-40 w-40 rounded-full flex flex-col items-center justify-center shadow-xl border-1 border-neutral-300 bg-neutral-200">
+                        <p className="text-3xl font-bold text-slate-900">{formatStudiedTime()}</p>
+                        <p className="text-sm text-red-400">{formatRemainingTime()}</p>
                     </div>
 
                     <div className="container mx-auto flex justify-center p-4">
-                        {/* Inputs de horas e minutos (seu código existente) */}
-                        <div className="m-4">
+                        <div className="flex flex-col items-center m-4">
                             <label className="block text-gray-700 text-sm font-bold mb-2">
-                                Horas:
+                                Hours:
                             </label>
                             <input
                                 type="number"
@@ -146,9 +145,9 @@ function App() {
                             />
                         </div>
 
-                        <div className="m-4">
+                        <div className="m-4 flex flex-col items-center">
                             <label className="block text-gray-700 text-sm font-bold mb-2">
-                                Minutos:
+                                Minutes:
                             </label>
                             <input
                                 type="number"
@@ -166,11 +165,10 @@ function App() {
                         Add
                     </button>
 
-                    {/* Área do Cronômetro (seu código existente) */}
                     <div className="mt-6 flex flex-col items-center">
                         <h1 className="text-3xl font-bold text-slate-900 pb-4">Session</h1>
-                        <div className="text-2xl font-bold h-32 w-32 bg-neutral-200 border border-neutral-300 shadow-xl flex justify-center items-center rounded-full text-slate-900">{formatElapsedTime()}</div>
-                        <div className="flex mt-6">
+                        <div className="text-xl font-semibold h-28 w-28 bg-neutral-200 border border-neutral-300 shadow-xl flex justify-center items-center rounded-full text-slate-900">{formatElapsedTime()}</div>
+                        <div className="flex my-6">
                             <button
                                 onClick={startTimer}
                                 disabled={isRunning}
