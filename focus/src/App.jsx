@@ -121,7 +121,7 @@ function App() {
     return (
         <div className="min-h-screen flex flex-col bg-neutral-50 items-center">
             {/* Header (seu código existente) */}
-            <header className="bg-slate-900 w-full h-[15vh] flex items-center justify-center text-neutral-50 py-4">
+            <header className="bg-slate-900 w-full h-[15vh] flex items-center justify-center text-neutral-50 pt-4">
                 <h1 className="text-6xl font-bold font-serif text-center">FOCUS</h1>
             </header>
 
