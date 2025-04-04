@@ -5,8 +5,8 @@ function App() {
     const [minutesStudied, setMinutesStudied] = useState(JSON.parse(localStorage.getItem("minutesStudied")) || 0);
     const [dailyGoalHours, setDailyGoalHours] = useState(parseInt(localStorage.getItem("dailyGoalHours")) || 4);
     const [dailyGoalMinutes, setDailyGoalMinutes] = useState(parseInt(localStorage.getItem("dailyGoalMinutes")) || 0);
-    const [sessionHours, setSessionHours] = useState(''); // Inicializado como string vazia
-    const [sessionMinutes, setSessionMinutes] = useState(''); // Inicializado como string vazia
+    const [sessionHours, setSessionHours] = useState('');
+    const [sessionMinutes, setSessionMinutes] = useState('');
 
     // Estados para o cronômetro (seu código existente)
     const [isRunning, setIsRunning] = useState(false);
@@ -37,8 +37,8 @@ function App() {
 
         setHoursStudied(newHours);
         setMinutesStudied(newMinutes);
-        setSessionHours(''); // Limpar após registrar
-        setSessionMinutes(''); // Limpar após registrar
+        setSessionHours('');
+        setSessionMinutes('');
     };
 
     const totalStudiedMinutes = hoursStudied * 60 + minutesStudied;
@@ -119,6 +119,24 @@ function App() {
         setElapsedTime(0);
     };
 
+    const resetAll = () => {
+        if (window.confirm("Tem certeza que deseja resetar todo o progresso?")) {
+            setHoursStudied(0);
+            setMinutesStudied(0);
+            setDailyGoalHours(4);
+            setDailyGoalMinutes(0);
+            setSessionHours('');
+            setSessionMinutes('');
+            setIsRunning(false);
+            setElapsedTime(0);
+            clearInterval(intervalRef.current);
+            localStorage.removeItem("hoursStudied");
+            localStorage.removeItem("minutesStudied");
+            localStorage.removeItem("dailyGoalHours");
+            localStorage.removeItem("dailyGoalMinutes");
+        }
+    };
+
     useEffect(() => {
         return () => clearInterval(intervalRef.current); // Limpar o intervalo do cronômetro
     }, []);
@@ -150,15 +168,18 @@ function App() {
 
     }, [hoursStudied, minutesStudied, dailyGoalHours, dailyGoalMinutes]);
 
+    const timerStyle = isRunning
+        ? "text-xl font-semibold h-28 w-28 bg-neutral-200 border-4 border-slate-900 shadow-xl flex justify-center items-center rounded-full text-slate-900"
+        : "text-xl font-semibold h-28 w-28 bg-neutral-200 border border-neutral-300 shadow-xl flex justify-center items-center rounded-full text-slate-900";
+
     return (
         <div className="min-h-screen flex flex-col bg-neutral-50 items-center">
-            {/* Header (seu código existente) */}
             <header className="bg-slate-900 w-full h-[15vh] flex items-center justify-center text-neutral-50 pt-4">
                 <h1 className="text-6xl font-bold font-serif text-center">FOCUS</h1>
             </header>
 
-            <div className="w-full flex flex-col items-center bg-slate-900 p-8">
-                <div className="w-full flex flex-col items-center bg-neutral-50 pt-4 rounded-2xl h-[78.133vh]">
+            <div className="w-full h-[85vh] flex flex-col items-center bg-slate-900 p-8">
+                <div className="w-full flex flex-col items-center bg-neutral-50 pt-4 rounded-2xl h-[auto]"> {/* Alterado para auto para acomodar o botão */}
                     <div className="mt-8 h-40 w-40 rounded-full flex flex-col items-center justify-center shadow-xl border-1 border-neutral-300 bg-neutral-200">
                         <p className="text-3xl font-bold text-slate-900">{formatStudiedTime()}</p>
                         <p className="text-sm text-red-400">{formatRemainingTime()}</p>
@@ -201,8 +222,8 @@ function App() {
 
                     <div className="mt-6 flex flex-col items-center">
                         <h1 className="text-3xl font-bold text-slate-900 pb-4">Session</h1>
-                        <div className="text-xl font-semibold h-28 w-28 bg-neutral-200 border border-neutral-300 shadow-xl flex justify-center items-center rounded-full text-slate-900">{formatElapsedTime()}</div>
-                        <div className="flex my-6">
+                        <div className={timerStyle}>{formatElapsedTime()}</div>
+                        <div className="flex mt-6">
                             <button
                                 onClick={startTimer}
                                 disabled={isRunning}
@@ -231,6 +252,15 @@ function App() {
                             </button>
                         </div>
                     </div>
+                    <button
+                        onClick={resetAll}
+                        className="shadow-xl bg-red-500 text-white font-bold py-2 px-4 rounded-full mt-8 mb-4"
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
+                        </svg>
+                        
+                    </button>
                 </div>
             </div>
         </div>
