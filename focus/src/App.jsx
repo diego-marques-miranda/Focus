@@ -173,13 +173,14 @@ function App() {
         : "text-xl font-semibold h-28 w-28 bg-neutral-200 border border-neutral-300 shadow-xl flex justify-center items-center rounded-full text-slate-900";
 
     return (
-        <div className="min-h-screen flex flex-col bg-neutral-50 items-center">
-            <header className="bg-slate-900 w-full h-[15vh] flex items-center justify-center text-neutral-50 pt-4">
+        <div className="min-h-screen flex flex-col bg-neutral-50">
+        <div className=" flex flex-col bg-neutral-50 items-center flex-grow-1">
+            <header className="bg-slate-900 w-full flex items-center justify-center text-neutral-50 py-4">
                 <h1 className="text-6xl font-bold font-serif text-center">FOCUS</h1>
             </header>
 
-            <div className="w-full flex flex-col items-center bg-slate-900 p-8">
-                <div className="w-full flex flex-col items-center bg-neutral-50 pt-4 rounded-2xl min-h-[calc(100vh - 15vh - 64px)]"> {/* Alterado min-h */}
+            <div className="w-full flex-grow bg-slate-900 p-8">
+                <div className="w-full flex flex-col items-center bg-neutral-50 pt-4 rounded-2xl min-h-full"> {/* Alterado min-h */}
                     <div className="mt-8 h-40 w-40 rounded-full flex flex-col items-center justify-center shadow-xl border-1 border-neutral-300 bg-neutral-200">
                         <p className="text-3xl font-bold text-slate-900">{formatStudiedTime()}</p>
                         <p className="text-sm text-red-400">{formatRemainingTime()}</p>
@@ -188,7 +189,7 @@ function App() {
                     <div className="container mx-auto flex justify-center p-4">
                         <div className="flex flex-col items-center m-4">
                             <label className="block text-gray-700 text-sm font-bold mb-2">
-                                Horas:
+                                Hours:
                             </label>
                             <input
                                 type="number"
@@ -200,7 +201,7 @@ function App() {
 
                         <div className="m-4 flex flex-col items-center">
                             <label className="block text-gray-700 text-sm font-bold mb-2">
-                                Minutos:
+                                Minutes:
                             </label>
                             <input
                                 type="number"
@@ -264,6 +265,7 @@ function App() {
                 </div>
             </div>
         </div>
+    </div>
     );
 }
 
