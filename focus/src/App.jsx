@@ -7,8 +7,11 @@ function App() {
     const [dailyGoalMinutes, setDailyGoalMinutes] = useState(parseInt(localStorage.getItem("dailyGoalMinutes")) || 0);
     const [sessionHours, setSessionHours] = useState('');
     const [sessionMinutes, setSessionMinutes] = useState('');
+    const [showGoalSetter, setShowGoalSetter] = useState(false);
+    const [newGoalHours, setNewGoalHours] = useState('');
+    const [newGoalMinutes, setNewGoalMinutes] = useState('');
 
-    // Estados para o cronômetro (seu código existente)
+    // Estados para o cronômetro
     const [isRunning, setIsRunning] = useState(false);
     const [elapsedTime, setElapsedTime] = useState(0);
     const intervalRef = useRef(null);
@@ -25,6 +28,31 @@ function App() {
         if (value === '' || (!isNaN(parseInt(value)) && parseInt(value) >= 0 && parseInt(value) <= 59)) {
             setSessionMinutes(value);
         }
+    };
+
+    const handleGoalHoursChange = (e) => {
+        const value = e.target.value;
+        if (value === '' || (!isNaN(parseInt(value)) && parseInt(value) >= 0)) {
+            setNewGoalHours(value);
+        }
+    };
+
+    const handleGoalMinutesChange = (e) => {
+        const value = e.target.value;
+        if (value === '' || (!isNaN(parseInt(value)) && parseInt(value) >= 0 && parseInt(value) <= 59)) {
+            setNewGoalMinutes(value);
+        }
+    };
+
+    const setDailyGoal = () => {
+        const hours = parseInt(newGoalHours) || 0;
+        const minutes = parseInt(newGoalMinutes) || 0;
+
+        setDailyGoalHours(hours);
+        setDailyGoalMinutes(minutes);
+        setNewGoalHours('');
+        setNewGoalMinutes('');
+        setShowGoalSetter(false);
     };
 
     const registerSession = () => {
@@ -138,29 +166,25 @@ function App() {
     };
 
     useEffect(() => {
-        return () => clearInterval(intervalRef.current); // Limpar o intervalo do cronômetro
+        return () => clearInterval(intervalRef.current);
     }, []);
 
     useEffect(() => {
         const resetAtMidnight = () => {
             const now = new Date();
             const midnight = new Date(now);
-            midnight.setHours(24, 0, 0, 0); // Próxima meia-noite
+            midnight.setHours(24, 0, 0, 0);
             const timeUntilMidnight = midnight.getTime() - now.getTime();
 
             setTimeout(() => {
                 setHoursStudied(0);
                 setMinutesStudied(0);
-
-                // Reagenda o reset para a próxima meia-noite
                 resetAtMidnight();
             }, timeUntilMidnight);
         };
 
-        // Inicia a verificação para o reset na montagem do componente
         resetAtMidnight();
 
-        // Salvar os dados no localStorage sempre que `hoursStudied` ou `minutesStudied` mudarem
         localStorage.setItem("hoursStudied", JSON.stringify(hoursStudied));
         localStorage.setItem("minutesStudied", JSON.stringify(minutesStudied));
         localStorage.setItem("dailyGoalHours", JSON.stringify(dailyGoalHours));
@@ -174,98 +198,143 @@ function App() {
 
     return (
         <div className="min-h-screen flex flex-col bg-neutral-50">
-        <div className=" flex flex-col bg-neutral-50 items-center flex-grow-1">
-            <header className="bg-slate-900 w-full flex items-center justify-center text-neutral-50 py-4">
-                <h1 className="text-6xl font-bold font-serif text-center">FOCUS</h1>
-            </header>
+            <div className="flex flex-col bg-neutral-50 items-center flex-grow-1">
+                <header className="bg-slate-900 w-full flex items-center justify-center text-neutral-50 py-4">
+                    <h1 className="text-6xl font-bold font-serif text-center">FOCUS</h1>
+                </header>
 
-            <div className="w-full flex-grow bg-slate-900 p-8">
-                <div className="w-full flex flex-col items-center bg-neutral-50 pt-4 rounded-2xl min-h-full"> {/* Alterado min-h */}
-                    <div className="mt-8 h-40 w-40 rounded-full flex flex-col items-center justify-center shadow-xl border-1 border-neutral-300 bg-neutral-200">
-                        <p className="text-3xl font-bold text-slate-900">{formatStudiedTime()}</p>
-                        <p className="text-sm text-red-400">{formatRemainingTime()}</p>
-                    </div>
-
-                    <div className="container mx-auto flex justify-center p-4">
-                        <div className="flex flex-col items-center m-4">
-                            <label className="block text-gray-700 text-sm font-bold mb-2">
-                                Hours:
-                            </label>
-                            <input
-                                type="number"
-                                value={sessionHours}
-                                onChange={handleSessionHoursChange}
-                                className="shadow-xl border border-neutral-200 bg-neutral-100 appearance-none rounded-full w-16 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                            />
+                <div className="w-full flex-grow bg-slate-900 p-8">
+                    <div className="w-full flex flex-col items-center bg-neutral-50 pt-4 rounded-2xl min-h-full">
+                        <div className="mt-8 h-40 w-40 rounded-full flex flex-col items-center justify-center shadow-xl border-1 border-neutral-300 bg-neutral-200">
+                            <p className="text-3xl font-bold text-slate-900">{formatStudiedTime()}</p>
+                            <p className="text-sm text-red-400">{formatRemainingTime()}</p>
                         </div>
 
-                        <div className="m-4 flex flex-col items-center">
-                            <label className="block text-gray-700 text-sm font-bold mb-2">
-                                Minutes:
-                            </label>
-                            <input
-                                type="number"
-                                value={sessionMinutes}
-                                onChange={handleSessionMinutesChange}
-                                className="shadow-xl border-neutral-200 bg-neutral-100 appearance-none border rounded-full w-16 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                            />
+                        <div className="container mx-auto flex justify-center p-4">
+                            <div className="flex flex-col items-center m-4">
+                                <label className="block text-gray-700 text-sm font-bold mb-2">
+                                    Hours:
+                                </label>
+                                <input
+                                    type="number"
+                                    value={sessionHours}
+                                    onChange={handleSessionHoursChange}
+                                    className="shadow-xl border border-neutral-200 bg-neutral-100 appearance-none rounded-full w-16 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                />
+                            </div>
+
+                            <div className="m-4 flex flex-col items-center">
+                                <label className="block text-gray-700 text-sm font-bold mb-2">
+                                    Minutes:
+                                </label>
+                                <input
+                                    type="number"
+                                    value={sessionMinutes}
+                                    onChange={handleSessionMinutesChange}
+                                    className="shadow-xl border-neutral-200 bg-neutral-100 appearance-none border rounded-full w-16 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                />
+                            </div>
                         </div>
-                    </div>
 
-                    <button
-                        onClick={registerSession}
-                        className="shadow-xl bg-slate-900 hover:bg-slate-950 text-white font-bold py-2 px-4 rounded-full"
-                    >
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
-                        </svg>
-                    </button>
+                        <button
+                            onClick={registerSession}
+                            className="shadow-xl bg-slate-900 hover:bg-slate-950 text-white font-bold py-2 px-4 rounded-full"
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                            </svg>
+                        </button>
 
-                    <div className="mt-6 flex flex-col items-center">
-                        <h1 className="text-3xl font-bold text-slate-900 pb-4">Session</h1>
-                        <div className={timerStyle}>{formatElapsedTime()}</div>
-                        <div className="flex mt-6">
-                            <button
-                                onClick={startTimer}
-                                disabled={isRunning}
-                                className="shadow-xl bg-slate-900 text-white font-bold py-2 px-4 rounded-full mr-2 "
-                            >
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z" />
-                                </svg>
-                            </button>
-                            <button
-                                onClick={pauseTimer}
-                                disabled={!isRunning}
-                                className="shadow-xl bg-slate-900  text-white font-bold py-2 px-4 rounded-full mr-2 "
-                            >
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 5.25v13.5m-7.5-13.5v13.5" />
-                                </svg>
-                            </button>
-                            <button
-                                onClick={completeSession}
-                                className="shadow-xl bg-slate-900 text-white font-bold py-2 px-4 rounded-full"
-                            >
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
-                                </svg>
-                            </button>
+                        <div className="mt-6 flex flex-col items-center">
+                            <h1 className="text-3xl font-bold text-slate-900 pb-4">Session</h1>
+                            <div className={timerStyle}>{formatElapsedTime()}</div>
+                            <div className="flex mt-6">
+                                <button
+                                    onClick={startTimer}
+                                    disabled={isRunning}
+                                    className="shadow-xl bg-slate-900 text-white font-bold py-2 px-4 rounded-full mr-2"
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z" />
+                                    </svg>
+                                </button>
+                                <button
+                                    onClick={pauseTimer}
+                                    disabled={!isRunning}
+                                    className="shadow-xl bg-slate-900 text-white font-bold py-2 px-4 rounded-full mr-2"
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 5.25v13.5m-7.5-13.5v13.5" />
+                                    </svg>
+                                </button>
+                                <button
+                                    onClick={completeSession}
+                                    className="shadow-xl bg-slate-900 text-white font-bold py-2 px-4 rounded-full"
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
+                                    </svg>
+                                </button>
+                            </div>
                         </div>
-                    </div>
-                    <button
-                        onClick={resetAll}
-                        className="shadow-xl bg-red-500 text-white font-bold py-2 px-4 rounded-full mt-8 mb-4"
-                    >
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
-                        </svg>
 
-                    </button>
+                        <button
+                            onClick={() => setShowGoalSetter(!showGoalSetter)}
+                            className="shadow-xl bg-slate-900  text-white font-bold py-2 px-4 rounded-full mt-4"
+                        >
+                            {showGoalSetter ? 'Cancel' : 'Set Daily Goal'}
+                        </button>
+
+                        {showGoalSetter && (
+                            <div className="mt-4 p-4 bg-neutral-100 rounded-lg shadow-md">
+                                <h2 className="text-lg font-bold text-slate-900 mb-2">Set Daily Goal</h2>
+                                <div className="flex items-center justify-center">
+                                    <div className="flex flex-col items-center m-2">
+                                        <label className="block text-gray-700 text-sm font-bold mb-1">
+                                            Hours:
+                                        </label>
+                                        <input
+                                            type="number"
+                                            value={newGoalHours}
+                                            onChange={handleGoalHoursChange}
+                                            className="shadow border border-neutral-200 bg-white appearance-none rounded-full w-16 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                            placeholder={dailyGoalHours}
+                                        />
+                                    </div>
+                                    <div className="flex flex-col items-center m-2">
+                                        <label className="block text-gray-700 text-sm font-bold mb-1">
+                                            Minutes:
+                                        </label>
+                                        <input
+                                            type="number"
+                                            value={newGoalMinutes}
+                                            onChange={handleGoalMinutesChange}
+                                            className="shadow border border-neutral-200 bg-white appearance-none rounded-full w-16 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                            placeholder={dailyGoalMinutes}
+                                        />
+                                    </div>
+                                </div>
+                                <button
+                                    onClick={setDailyGoal}
+                                    className="mt-2 shadow-xl bg-slate-900  text-white font-bold py-2 px-4 rounded-full w-full"
+                                >
+                                    Save Goal
+                                </button>
+                            </div>
+                        )}
+
+                        <button
+                            onClick={resetAll}
+                            className="shadow-xl bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-full mt-4 mb-4"
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
+                            </svg>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
     );
 }
 
